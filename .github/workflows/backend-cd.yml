@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "backend/**"
+      - "starter/backend/**"
   workflow_dispatch:
 
 jobs:
@@ -14,14 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install and Lint Backend
-        run: cd backend && npm install && npm run lint
+        run: cd starter/backend && npm install && npm run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install and Test Backend
-        run: cd backend && npm install && npm test
+        run: cd starter/backend && npm install && npm test
 
   build:
     needs: [lint, test]
@@ -44,7 +44,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
-        working-directory: backend
+        working-directory: starter/backend
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -69,7 +69,7 @@ jobs:
           ECR_REGISTRY: 838349749845.dkr.ecr.us-east-1.amazonaws.com
           ECR_REPOSITORY: backend
           IMAGE_TAG: ${{ github.sha }}
-        working-directory: backend/k8s
+        working-directory: starter/backend/k8s
         run: |
           kustomize edit set image backend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build | kubectl apply -f -
