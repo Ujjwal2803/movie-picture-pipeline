@@ -31,9 +31,8 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         working-directory: starter/frontend
         run: |
-          echo "REACT_APP_MOVIE_API_URL=http://ab5064f49b5a84d10b4632ea86aca791-550430836.us-east-1.elb.amazonaws.com" > .env
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      echo "REACT_APP_MOVIE_API_URL=http://<YOUR_NEW_BACKEND_EXTERNAL_IP>" > .env
+      docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           
       - name: Update Kubeconfig
         run: aws eks update-kubeconfig --name cluster --region us-east-1
